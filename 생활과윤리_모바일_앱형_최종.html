@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#111111">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="생활과 윤리 모의고사">
+<title>생활과 윤리 평가원형 20문항 모의고사</title>
+<style>
+@page{size:A4;margin:13mm 14mm}
+*{box-sizing:border-box} body{margin:0;background:#eee;color:#111;font-family:"Noto Serif KR","Batang","Malgun Gothic",serif;line-height:1.55}
+#app{max-width:900px;margin:auto;background:white;min-height:100vh}
+header{border-bottom:3px solid #111;padding:18px 24px 12px}.kicker{font-size:13px;font-weight:700}.title{font-size:25px;font-weight:900;margin:3px 0}.sub{font-size:13px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;padding:12px 24px;border-bottom:1px solid #aaa;position:sticky;top:0;background:#fff;z-index:4}
+button{border:1px solid #333;background:#fff;padding:8px 12px;cursor:pointer;border-radius:4px}button.primary{background:#111;color:#fff}
+.timer{margin-left:auto;font-weight:900}.page{padding:18px 24px}.meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;border:1px solid #222;padding:10px;margin-bottom:16px;font-size:13px}
+.q{border-top:1px solid #888;padding:17px 0 20px;break-inside:avoid}.qhead{font-weight:900}.stem{margin:8px 0}.box{border:1px solid #555;padding:10px;margin:10px 0}.quote{margin:8px 0;padding:9px 12px;border-left:4px solid #555;background:#fafafa}
+.opts{display:grid;gap:6px}.opt{display:flex;gap:8px;align-items:flex-start;padding:5px 7px;border-radius:3px}.opt input{margin-top:6px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}.tag{font-size:11px;color:#555}.result{display:none}.score{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.card{border:1px solid #555;padding:12px;text-align:center}.big{font-size:25px;font-weight:900}
+table{border-collapse:collapse;width:100%;font-size:12px}td,th{border:1px solid #888;padding:5px;text-align:center}
+.good{font-weight:900}.bad{font-weight:900}.explain{background:#f7f7f7;padding:10px;margin-top:8px}
+.analysis{margin-top:18px}.hidden{display:none}
+@media(max-width:650px){.score{grid-template-columns:1fr 1fr}.meta{grid-template-columns:1fr}.page{padding:12px}.toolbar{position:static}.timer{margin-left:0}}
+@media print{body{background:white}#app{max-width:none}.toolbar{display:none}.q{break-inside:avoid}.result{display:none!important}}
+
+/* 모바일 앱형 최적화 */
+html{background:#111;-webkit-text-size-adjust:100%;overscroll-behavior:none}
+body{min-height:100dvh;background:#111}
+#app{min-height:100dvh;max-width:920px}
+.toolbar{top:0;padding:9px 12px;gap:6px;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.toolbar button{min-height:42px;font-size:14px;font-weight:700}
+.timer{font-variant-numeric:tabular-nums}
+@media(max-width:700px){
+  body{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+  header{padding:calc(12px + env(safe-area-inset-top)) 16px 10px}
+  .title{font-size:22px}
+  .sub{font-size:12px}
+  .toolbar{position:sticky;top:0;z-index:10;justify-content:space-between;padding-left:12px;padding-right:12px}
+  .toolbar button{flex:1;min-width:0;padding:9px 6px}
+  .timer{order:-1;width:100%;text-align:center;margin:0 0 2px;font-size:18px}
+  .page{padding:12px 14px calc(24px + env(safe-area-inset-bottom))}
+  .meta{font-size:12px;padding:9px;gap:6px}
+  .q{padding:18px 0}
+  .qhead{font-size:16px;line-height:1.5}
+  .stem{font-size:15px;line-height:1.7}
+  .box,.quote{font-size:14px;line-height:1.7}
+  .opt{min-height:46px;padding:9px 7px;font-size:14px;line-height:1.55}
+  .opt input{width:19px;height:19px;flex:none;margin-top:2px}
+  .tag{font-size:10px;margin-top:7px}
+  table{font-size:11px}
+}
+@media(max-width:430px){
+  .toolbar{flex-wrap:wrap}
+  .timer{flex-basis:100%;order:-1}
+  .toolbar button{flex:1 1 30%}
+  .title{font-size:20px}
+  .qhead{font-size:15px}
+  .stem,.opt{font-size:14px}
+}
+@media(orientation:landscape) and (max-height:600px) and (max-width:900px){
+  .toolbar{position:sticky}
+  .toolbar .timer{flex-basis:auto;order:0;width:auto}
+}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+ <div class="kicker">2027학년도 수능 대비 · 사회탐구 영역</div>
+ <div class="title">생활과 윤리</div>
+ <div class="sub">평가원 공개 문항의 출제 구조를 참고한 자체 제작 문항은행 기반 모의고사 · 20문항 · 50점 · 30분</div>
+</header>
+<div class="toolbar">
+ <button class="primary" onclick="start()">새 시험 시작</button>
+ <button onclick="submitExam()">제출 및 채점</button>
+ <button onclick="window.print()">인쇄</button>
+ <span class="timer" id="timer">30:00</span>
+</div>
+
+<section id="exam" class="page">
+ <div class="meta"><div>성명: __________________</div><div>수험번호: __________________</div>
+ <div>과목: 생활과 윤리</div><div>문항 수: 20문항 / 총점: 50점</div></div>
+ <div id="questions"></div>
+</section>
+
+<section id="result" class="page result">
+ <h2>채점 결과 및 분석</h2>
+ <div class="score">
+  <div class="card"><div>원점수</div><div class="big" id="raw"></div></div>
+  <div class="card"><div>예상 표준점수</div><div class="big" id="std"></div></div>
+  <div class="card"><div>예상 백분위</div><div class="big" id="pct"></div></div>
+  <div class="card"><div>예상 등급</div><div class="big" id="grade"></div></div>
+ </div>
+ <div id="summary" class="analysis"></div>
+ <h3>문항별 결과</h3><div id="review"></div>
+ <h3>영역별 분석</h3><div id="topic"></div>
+ <p class="tag">※ 표준점수·백분위·등급은 최근 5개년 평가원/수능 공개 채점자료의 분포와 사회탐구 50점 체계를 참고한 모의고사용 추정치입니다. 실제 수능 성적을 보장하지 않습니다.</p>
+</section>
+<div style="text-align:center;padding:14px;color:#777;font-size:11px;border-top:1px solid #ddd">
+모바일 최적화 · 화면을 가로로 돌리면 긴 제시문을 더 넓게 볼 수 있습니다.
+</div>
+</div>
+
+<script>
+const Q=[
+{id:1,p:2,t:"윤리학의 성격",d:"easy",topic:"윤리학의 성격",s:"다음 글에 대한 설명으로 가장 적절한 것은?",c:"어떤 연구자는 사회 구성원의 도덕적 관행을 조사하여 그 관행이 형성된 원인을 설명하고자 한다. 다른 연구자는 여러 도덕적 선택 가운데 무엇이 옳은지를 판단할 수 있는 원칙을 제시하고자 한다.",o:["첫째 연구는 규범 윤리학, 둘째 연구는 기술 윤리학이다.","첫째 연구는 메타 윤리학, 둘째 연구는 기술 윤리학이다.","첫째 연구는 기술 윤리학, 둘째 연구는 규범 윤리학이다.","두 연구 모두 도덕 판단의 참·거짓만 분석한다.","두 연구 모두 가치 판단을 배제한 경험적 연구이다."],a:2,e:"도덕 현상을 경험적으로 기술하는 것은 기술 윤리학, 옳고 그름의 기준과 원칙을 제시하는 것은 규범 윤리학이다."},
+{id:2,p:2,t:"의무론",d:"normal",topic:"의무론",s:"칸트의 관점에서 옳은 판단은?",c:"갑은 자신에게 이익이 되므로 약속을 지키겠다고 생각한다. 을은 약속을 지키는 것이 보편적으로 타당한 의무이므로 지키겠다고 생각한다.",o:["갑의 행위만 도덕적 가치가 있다.","을의 행위는 의무에 따른 행위로 볼 수 있다.","갑은 선의지에 따라 행동한다.","을은 결과가 좋을 때만 도덕적이다.","두 사람 모두 행위의 결과만을 고려한다."],a:1,e:"칸트에게 도덕적 가치는 경향이나 결과가 아니라 의무에서 비롯된 행위와 선의지에 있다."},
+{id:3,p:2,t:"공리주의",d:"normal",topic:"공리주의",s:"다음 중 공리주의의 입장에 가장 가까운 것은?",c:"정책 A는 소수에게 불편을 주지만 전체 사회의 행복 총량을 크게 증가시킨다.",o:["소수의 권리는 어떤 경우에도 침해할 수 없다.","정책의 결과가 가져오는 전체 행복을 고려할 수 있다.","행위자의 동기만이 도덕 판단의 기준이다.","보편화 가능한 준칙인지 여부만 판단한다.","도덕 판단에서 행복과 고통은 무관하다."],a:1,e:"공리주의는 행위의 결과가 산출하는 행복과 고통, 특히 전체 효용을 중시한다."},
+{id:4,p:3,t:"덕 윤리",d:"normal",topic:"덕 윤리",s:"아리스토텔레스의 관점에서 옳은 설명은?",c:"한 학생은 매번 규칙을 지키지만 타인을 배려하려는 성품은 전혀 기르지 않는다. 다른 학생은 상황에 맞게 지나침과 모자람을 피하며 반복적으로 좋은 품성을 실천한다.",o:["첫째 학생만 덕 있는 사람이다.","둘째 학생은 품성의 덕을 형성하고 있다고 볼 수 있다.","덕은 행위의 반복과 무관하다.","덕은 감정과 욕구를 완전히 제거하는 상태이다.","행복은 덕과 관계없이 외적 재화만으로 결정된다."],a:1,e:"아리스토텔레스는 좋은 품성을 습관적으로 실천하고 중용에 맞게 행동하는 것을 덕의 형성과 연결한다."},
+{id:5,p:3,t:"사회계약론",d:"hard",topic:"사회계약론",s:"홉스와 로크에 대한 설명으로 가장 적절한 것은?",c:"갑은 자연 상태에서 강력한 공권력이 없다면 불안정이 커진다고 본다. 을은 정부가 개인의 기본적 권리를 보호하지 못한다면 정부에 대한 저항이 정당화될 수 있다고 본다.",o:["갑은 홉스, 을은 로크에 해당한다.","갑은 로크, 을은 홉스에 해당한다.","두 사람 모두 정부에 대한 저항을 절대적으로 부정한다.","갑은 자연 상태를 평화롭고 안정적인 상태로 본다.","을은 개인의 권리를 정부가 부여하는 것으로만 본다."],a:0,e:"홉스는 강력한 주권을 통한 질서 확보를 강조하고, 로크는 자연권 보호를 정부의 핵심 기능으로 보며 신탁 위반 시 저항권을 인정한다."},
+{id:6,p:3,t:"분배 정의",d:"hard",topic:"정의론",s:"롤스의 관점에서 가장 적절한 것은?",c:"사회 제도를 설계하는 사람들이 자신의 재능, 계층, 성별, 가정환경 등을 알 수 없는 상황에서 원칙을 선택한다고 가정한다.",o:["자신에게 유리한 원칙을 고르기 위해 실제 신분을 고려한다.","무지의 베일은 원초적 입장의 공정성을 확보하는 장치이다.","차등의 원칙은 모든 소득 차이를 금지한다.","정의로운 사회에서는 기본적 자유가 경제적 이익보다 항상 후순위이다.","롤스는 사회적 제도의 공정성과 무관하게 결과의 총합만 평가한다."],a:1,e:"무지의 베일은 당사자가 자신의 사회적 위치 등을 모르게 하여 공정한 원칙 선택을 돕는다."},
+{id:7,p:2,t:"형벌",d:"normal",topic:"형벌",s:"베카리아의 관점에서 적절하지 않은 것은?",c:"범죄 예방을 위한 형벌 제도를 논하면서 형벌의 필요성과 한계를 검토한다.",o:["형벌은 범죄 예방이라는 목적과 관련될 수 있다.","형벌은 필요한 정도를 넘어서는 고통을 주어서는 안 된다.","형벌의 자의적 집행은 경계되어야 한다.","형벌은 사회적 복수심을 무제한으로 충족시키기 위해 존재한다.","법률에 따른 형벌의 예측 가능성이 중요하다."],a:3,e:"베카리아는 형벌을 복수심의 무제한적 충족이 아니라 범죄 예방과 사회 방위의 관점에서 제한적으로 정당화한다."},
+{id:8,p:3,t:"시민 불복종",d:"hard",topic:"시민 불복종",s:"다음 상황을 롤스의 시민 불복종 개념으로 판단할 때 가장 적절한 것은?",c:"갑은 중대한 부정의가 지속되고 정상적인 합법 절차로 시정하기 어려운 상황에서 공개적으로 법을 위반하고, 그 행위의 법적 책임을 감수하겠다고 밝혔다.",o:["시민 불복종은 사적 이익을 위한 비밀 행동이어야 한다.","시민 불복종은 다수의 정의감에 호소하는 공개적 행위일 수 있다.","법을 위반하면 시민 불복종이 될 수 없으므로 항상 합법적이어야 한다.","시민 불복종은 폭력 사용을 통해 상대를 강제하는 것이 핵심이다.","모든 정책에 대한 불만은 시민 불복종의 충분조건이다."],a:1,e:"롤스의 시민 불복종은 공개적이고 정치적인 법 위반을 통해 다수의 정의감에 호소하는 행위로 설명된다."},
+{id:9,p:2,t:"분배 정의",d:"normal",topic:"정의론",s:"노직의 관점에 가장 부합하는 것은?",c:"어떤 사람이 정당한 절차를 거쳐 재화를 취득하고 이전받았다면 그 분배 결과가 동일하지 않더라도 정당할 수 있다고 본다.",o:["결과의 동일성만 있으면 취득 과정은 중요하지 않다.","정당한 취득과 이전의 역사가 분배 정의 판단에서 중요하다.","국가는 모든 재산을 공동 소유해야 한다.","개인의 재산권은 정의와 무관하다.","분배의 정의는 오직 행복 총량으로 결정된다."],a:1,e:"노직은 정당한 취득·이전과 교정의 원리에 따른 역사적 정의관을 강조한다."},
+{id:10,p:3,t:"생명 윤리",d:"hard",topic:"생명 윤리",s:"다음 주장을 제시한 사상가의 입장으로 적절한 것은?",c:"어떤 철학자는 인간뿐 아니라 고통을 경험할 수 있는 존재의 이익도 도덕적 고려에서 배제해서는 안 된다고 본다.",o:["종의 구성원이라는 사실만으로 도덕적 고려의 범위를 정한다.","고통과 쾌락을 경험할 수 있는 능력은 도덕적 고려와 관련된다.","도덕적 고려의 범위는 인간 사회의 법률에 의해 완전히 결정된다.","동물의 이익은 인간의 이익과 원리상 비교할 수 없다.","동물에 대한 모든 이용은 동일하게 허용되거나 금지되어야 한다."],a:1,e:"싱어의 선호 공리주의적 관점에서는 고통을 느낄 수 있는 존재의 이익을 동등하게 고려해야 한다."},
+{id:11,p:2,t:"환경 윤리",d:"normal",topic:"환경 윤리",s:"다음 중 생태 중심주의의 입장에 가까운 것은?",c:"인간의 편익만을 기준으로 자연을 평가하는 태도를 비판하고 생태계 전체의 건강과 안정성을 중요하게 본다.",o:["자연은 인간의 욕구를 충족하기 위한 수단일 뿐이다.","생태계 전체의 상호의존성과 온전성을 고려한다.","인간 이외의 존재는 어떠한 가치도 가질 수 없다.","환경 문제는 경제성장과 무관하다.","개별 생명체의 이익만이 유일한 판단 기준이다."],a:1,e:"생태 중심주의는 개별 생명체를 넘어 생태계와 생태적 관계의 보존을 중시한다."},
+{id:12,p:3,t:"동물 윤리",d:"hard",topic:"동물 윤리",s:"레건의 권리론에 대한 설명으로 적절한 것은?",c:"어떤 동물은 단순한 도구가 아니라 삶의 주체로서 자신의 경험과 복지를 가진다고 주장한다.",o:["삶의 주체인 동물도 본질적 가치를 가질 수 있다.","동물의 도덕적 지위는 시장 가격으로 결정된다.","동물은 모두 인간의 목적을 위한 수단이다.","고통의 양만 계산하면 권리 문제는 사라진다.","도덕적 권리는 오직 법적 계약 당사자에게만 있다."],a:0,e:"레건은 삶의 주체인 동물을 내재적 가치를 지닌 존재로 보고 도덕적 권리를 강조한다."},
+{id:13,p:3,t:"정보 윤리",d:"hard",topic:"정보 윤리",s:"다음 상황에 대한 판단으로 적절한 것은?",c:"갑은 공개된 자료를 편집해 사실과 다른 내용으로 만들고, 이를 실제 사건인 것처럼 유포했다. 을은 타인의 개인정보를 동의 없이 모아 광고 목적으로 판매했다.",o:["공개 자료라면 어떤 왜곡도 정당하다.","두 행위 모두 정보의 정확성·프라이버시와 관련된 윤리 문제를 낳을 수 있다.","개인정보는 인터넷에 있으면 영원히 누구나 자유롭게 이용할 수 있다.","정보 윤리에서는 결과보다 기술적 가능성만 중요하다.","허위 정보는 피해자가 없으면 언제나 정당하다."],a:1,e:"허위·왜곡 정보와 개인정보의 무단 이용은 정보의 정확성, 책임, 프라이버시 등의 문제와 연결된다."},
+{id:14,p:3,t:"직업 윤리",d:"normal",topic:"직업 윤리",s:"직업 윤리에 대한 설명으로 적절한 것은?",c:"전문직 종사자는 자신의 능력 향상뿐 아니라 업무가 타인과 사회에 미치는 영향을 고려해야 한다.",o:["전문성만 높다면 사회적 책임은 고려할 필요가 없다.","직업 활동은 사회적 관계와 무관한 순수한 사적 활동이다.","전문성 및 직업적 책임은 함께 고려될 수 있다.","경제적 보상은 직업 윤리와 항상 반대된다.","직업 윤리는 모든 직업에서 동일한 세부 규칙만 요구한다."],a:2,e:"직업은 사회적 역할과 연결되므로 전문성, 책임, 공익 등을 함께 고려할 수 있다."},
+{id:15,p:3,t:"예술 윤리",d:"hard",topic:"예술과 윤리",s:"예술과 윤리의 관계에 대한 주장으로 가장 적절한 것은?",c:"갑은 예술 작품의 미적 가치가 도덕적 평가와 별개라고 본다. 을은 작품이 사회적 영향력을 가지므로 도덕적 평가가 예술적 평가와 일정한 관련을 가질 수 있다고 본다.",o:["갑은 예술의 도덕주의, 을은 예술 지상주의를 주장한다.","갑은 예술 지상주의적 관점, 을은 도덕주의적 관점과 연결될 수 있다.","두 입장은 예술과 윤리의 관계를 완전히 동일하게 본다.","을은 예술의 미적 가치만을 인정한다.","갑은 모든 예술 작품의 제작을 법으로 금지해야 한다고 본다."],a:1,e:"예술의 자율성과 미적 가치의 독립성을 강조하는 입장과 도덕적 평가의 관련성을 강조하는 입장을 구분할 수 있다."},
+{id:16,p:2,t:"다문화 윤리",d:"normal",topic:"다문화주의",s:"다문화 사회에서 문화적 다양성을 존중한다는 이유만으로 정당화할 수 없는 주장은?",c:"한 사회의 전통적 관습이 다른 집단 구성원의 기본적 권리를 심각하게 침해할 가능성이 제기되었다.",o:["문화적 차이를 이해하려는 태도는 중요하다.","모든 관습은 문화라는 이유만으로 비판 대상이 될 수 없다고 단정할 수 있다.","기본적 권리와 문화적 다양성을 함께 검토할 필요가 있다.","문화 내부의 비판과 변화 가능성을 인정할 수 있다.","문화적 관습의 정당성은 구체적인 권리 침해 여부와 함께 검토할 수 있다."],a:1,e:"문화 상대성에 대한 존중이 모든 관습을 무조건 정당화한다는 뜻은 아니다."},
+{id:17,p:3,t:"전쟁과 평화",d:"hard",topic:"전쟁과 평화",s:"정당한 전쟁론의 조건을 검토한 것으로 적절한 것은?",c:"국가 A가 명백한 무력 공격을 받았고 다른 평화적 수단이 실패한 상황에서 방어를 위한 군사 행동을 검토한다.",o:["어떤 전쟁도 목적이나 상황과 무관하게 동일하게 평가된다.","정당한 명분과 최후 수단성 등 여러 조건을 검토할 수 있다.","군사력이 강하면 전쟁의 정당성이 자동으로 확보된다.","민간인 피해는 전쟁의 도덕적 평가와 무관하다.","전쟁이 시작되면 수단의 제한은 모두 사라진다."],a:1,e:"정당한 전쟁 논의에서는 정당한 명분, 최후 수단, 비례성, 민간인 보호 등 조건이 문제된다."},
+{id:18,p:3,t:"국제 윤리",d:"hard",topic:"국제 윤리",s:"세계시민주의적 관점과 연결되는 주장은?",c:"국가의 경계를 이유로 타국 시민의 심각한 고통을 도덕적 고려에서 완전히 제외해서는 안 된다는 주장이 제기되었다.",o:["도덕적 의무는 국경 안에서만 성립한다.","국경을 넘어선 인간의 도덕적 고려 가능성을 인정할 수 있다.","국제 원조는 항상 국가 주권 침해이다.","세계시민주의는 모든 국가 제도의 즉각적 폐지를 의미한다.","국제적 문제는 윤리적 판단의 대상이 될 수 없다."],a:1,e:"세계시민주의는 인간이라는 공통의 지위를 바탕으로 국경을 넘어선 도덕적 고려와 의무를 논한다."},
+{id:19,p:2,t:"죽음과 삶",d:"normal",topic:"삶과 죽음의 윤리",s:"삶과 죽음의 윤리에 대한 설명으로 적절한 것은?",c:"환자의 자기결정권, 생명의 가치, 의료진의 의무가 충돌하는 상황에서는 여러 윤리 원칙의 관계를 검토해야 한다.",o:["어떤 상황에서도 하나의 원칙만 고려하면 된다.","환자의 자율성과 생명 보호 등의 원칙이 충돌할 수 있다.","의료 윤리에서는 환자의 의사는 항상 무시된다.","생명의 가치에 대한 논의는 의료와 무관하다.","윤리적 판단은 사실관계를 고려할 필요가 없다."],a:1,e:"생명 윤리의 실제 사례에서는 자율성, 선행, 악행 금지, 정의 등의 원칙과 구체적 사실관계를 함께 검토한다."},
+{id:20,p:2,t:"종합 추론",d:"killer",topic:"종합 추론",s:"다음 갑~정의 주장을 종합하여 옳게 판단한 것은?",c:"갑: 도덕적 행위는 결과와 무관하게 보편화 가능한 의무에 따라야 한다. 을: 행위의 옳고 그름은 전체 행복을 얼마나 증진하는지와 관련된다. 병: 정의로운 제도는 공정한 조건에서 합의될 수 있는 원칙에 따라야 한다. 정: 인간 이외의 존재도 고통을 경험한다면 그 이익은 도덕적으로 고려될 수 있다.",o:["갑은 공리주의, 을은 의무론을 대표한다.","갑은 의무론, 을은 공리주의, 병은 롤스, 정은 싱어와 연결될 수 있다.","병은 노직의 최소국가론만을 뜻한다.","정은 인간 중심주의를 대표한다.","갑과 을은 도덕 판단에서 결과만을 공통으로 중시한다."],a:1,e:"갑은 칸트 의무론, 을은 공리주의, 병은 롤스의 정의론, 정은 싱어의 동물 윤리와 연결된다."}
+];
+
+let paper=[],answers={},remaining=1800,interval=null,submitted=false;
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function start(){
+ submitted=false;answers={};remaining=1800;clearInterval(interval);
+ paper=shuffle(Q).map((q,i)=>({...q,n:i+1}));
+ render(); document.getElementById("result").style.display="none"; document.getElementById("exam").style.display="block";
+ interval=setInterval(()=>{remaining--;clock();if(remaining<=0){clearInterval(interval);submitExam()}},1000);clock();
+ scrollTo(0,0);
+}
+function clock(){let m=Math.floor(remaining/60),s=remaining%60;document.getElementById("timer").textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`}
+function render(){
+ let h="";
+ paper.forEach(q=>{
+  h+=`<article class="q"><div class="qhead">${q.n}. [${q.p}점] ${q.s}</div><div class="stem">${q.c}</div><div class="opts">`;
+  q.o.forEach((x,i)=>h+=`<label class="opt"><input type="radio" name="q${q.n}" value="${i}" onchange="answers[${q.n}]=${i}"><span>${"①②③④⑤"[i]}</span><span>${x}</span></label>`);
+  h+=`</div><div class="tag">영역: ${q.topic} · 난도: ${q.d}</div></article>`;
+ });
+ document.getElementById("questions").innerHTML=h;
+}
+function submitExam(){
+ if(submitted)return; submitted=true;clearInterval(interval);
+ let raw=0, correct=0;
+ paper.forEach(q=>{if(answers[q.n]===q.a){raw+=q.p;correct++}});
+ const difficulty=paper.reduce((s,q)=>s+({easy:.85,normal:1,hard:1.15,killer:1.3}[q.d]),0)/20;
+ // 5개년 공개 채점자료를 참고한 모의 추정 모델. 실제 수능 산출식을 복제하지 않음.
+ const shift=(difficulty-1)*8;
+ const z=(raw-39-shift)/6.2;
+ const pct=Math.max(1,Math.min(99,Math.round(50+z*20)));
+ const std=Math.round(50+z*10);
+ // 난도에 따라 예상 원점수 등급컷을 이동
+ const cuts=[46,43,39,34,28,22,16,10,0].map(x=>Math.round(x+shift));
+ let g=9; for(let i=0;i<8;i++) if(raw>=cuts[i]){g=i+1;break}
+ document.getElementById("raw").textContent=`${raw}/50`;
+ document.getElementById("std").textContent=std;
+ document.getElementById("pct").textContent=pct;
+ document.getElementById("grade").textContent=g+"등급";
+ let level=raw>=45?"상위권":raw>=38?"중상위권":raw>=30?"중위권":"보완 필요";
+ document.getElementById("summary").innerHTML=`<div class="box"><b>종합 분석</b><br>이번 시험에서 ${correct}/20문항을 정답 처리했습니다. 추정 난도 보정 결과 <b>${level}</b>으로 분류됩니다. 표준점수와 백분위는 모의고사용 추정치입니다.</div>`;
+ let rh="";
+ paper.forEach(q=>{
+  let u=answers[q.n], ok=u===q.a;
+  rh+=`<div class="q"><b>${q.n}번 · ${ok?"정답":"오답"} · ${q.p}점</b><br>내 답: ${u==null?"미응답":"①②③④⑤"[u]} / 정답: ${"①②③④⑤"[q.a]}<div class="explain">${q.e}</div></div>`;
+ });
+ document.getElementById("review").innerHTML=rh;
+ const topics={};paper.forEach(q=>{topics[q.topic]??={n:0,w:0};topics[q.topic].n++;if(answers[q.n]!==q.a)topics[q.topic].w++});
+ document.getElementById("topic").innerHTML=Object.entries(topics).map(([k,v])=>`<div class="box"><b>${k}</b> · ${v.n-v.w}/${v.n} 정답 · 오답 ${v.w}개</div>`).join("");
+ document.getElementById("exam").style.display="none";document.getElementById("result").style.display="block";scrollTo(0,0);
+}
+start();
+</script>
+</body></html>
